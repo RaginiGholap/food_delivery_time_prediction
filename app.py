@@ -1,3 +1,6 @@
+import streamlit as st
+import pandas as pd
+import pickle
 # Load model
 data = pickle.load(open("food_delivery_model.pkl", "rb"))
 model = data["model"]
@@ -27,3 +30,4 @@ input_encoded = input_encoded[model_columns]
 
 # Predict
 prediction = model.predict(input_encoded)
+
