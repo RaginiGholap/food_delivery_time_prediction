@@ -50,14 +50,14 @@ st.divider()
 if st.button("Predict Delivery Time", use_container_width=True):
 
     # Step A: Input Data
-    input_df = pd.DataFrame([{
+   input_df = pd.DataFrame([{
         "Distance_km": distance,
         "Preparation_Time_min": prep_time,
         "Courier_Experience_yrs": experience,
         "Weather": weather,
         "Traffic_Level": traffic,
         "Time_of_Day": time_day,
-        "Vehicle_Type": vehicle
+        "Vehicle_Type": vehicle_input
     }])
 
     # Step B: Encoding
@@ -70,14 +70,11 @@ if st.button("Predict Delivery Time", use_container_width=True):
 
     # 🔴 FIX: Vehicle Encoding
     if vehicle == "Bike":
-        if "Vehicle_Type_Scooter" in input_encoded:
-            input_encoded["Vehicle_Type_Scooter"] = 0
-        if "Vehicle_Type_Car" in input_encoded:
-            input_encoded["Vehicle_Type_Car"] = 0
-
+         vehicle_input = "Scooter"
     elif vehicle == "Scooter":
-        if "Vehicle_Type_Scooter" in input_encoded:
-            input_encoded["Vehicle_Type_Scooter"] = 1
+         vehicle_input = "Bike"
+    else:
+         vehicle_input = vehicle
 
     # Reorder columns
     input_encoded = input_encoded[model_columns]
