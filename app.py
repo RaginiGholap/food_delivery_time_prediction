@@ -66,11 +66,28 @@ if st.button("Predict Delivery Time", use_container_width=True):
     }])
 
     # Step B: Encode Input (Matches your original logic)
-    input_encoded = pd.get_dummies(input_df)
-    for col in model_columns:
-        if col not in input_encoded:
-            input_encoded[col] = 0
-    input_encoded = input_encoded[model_columns]
+   # Step B: Encode Input (FIXED)
+
+input_encoded = pd.get_dummies(input_df)
+
+# Ensure all columns match training data
+for col in model_columns:
+    if col not in input_encoded:
+        input_encoded[col] = 0
+
+# 🔴 Fix Vehicle Encoding Issue
+if vehicle == "Bike":
+    if "Vehicle_Type_Scooter" in input_encoded:
+        input_encoded["Vehicle_Type_Scooter"] = 0
+    if "Vehicle_Type_Car" in input_encoded:
+        input_encoded["Vehicle_Type_Car"] = 0
+
+elif vehicle == "Scooter":
+    if "Vehicle_Type_Scooter" in input_encoded:
+        input_encoded["Vehicle_Type_Scooter"] = 1
+
+# Reorder columns
+input_encoded = input_encoded[model_columns]
 
     # Step C: Predict
     prediction = model.predict(input_encoded)
