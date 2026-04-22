@@ -34,7 +34,6 @@ with col1:
     st.subheader("📊 Order Overview")
     distance = st.number_input("Distance (km)", min_value=1.0, value=5.0)
     prep_time = st.number_input("Preparation Time (min)", min_value=1, value=15)
-
     st.write("Current Traffic Status")
     st.title(f"{traffic}")
 
@@ -49,8 +48,16 @@ st.divider()
 # 5. Prediction
 if st.button("Predict Delivery Time", use_container_width=True):
 
-    # Step A: Input Data
-   input_df = pd.DataFrame([{
+    # 🔴 Swap Bike ↔ Scooter
+    if vehicle == "Bike":
+        vehicle_input = "Scooter"
+    elif vehicle == "Scooter":
+        vehicle_input = "Bike"
+    else:
+        vehicle_input = vehicle
+
+    # Step A: Create input
+    input_df = pd.DataFrame([{
         "Distance_km": distance,
         "Preparation_Time_min": prep_time,
         "Courier_Experience_yrs": experience,
@@ -63,23 +70,14 @@ if st.button("Predict Delivery Time", use_container_width=True):
     # Step B: Encoding
     input_encoded = pd.get_dummies(input_df)
 
-    # Match columns with training
+    # Match training columns
     for col in model_columns:
         if col not in input_encoded:
             input_encoded[col] = 0
 
-    # 🔴 FIX: Vehicle Encoding
-    if vehicle == "Bike":
-         vehicle_input = "Scooter"
-    elif vehicle == "Scooter":
-         vehicle_input = "Bike"
-    else:
-         vehicle_input = vehicle
-
-    # Reorder columns
     input_encoded = input_encoded[model_columns]
 
-    # Step C: Prediction (✅ FIXED INDENTATION)
+    # Step C: Prediction
     prediction = model.predict(input_encoded)
 
     # Step D: Output
